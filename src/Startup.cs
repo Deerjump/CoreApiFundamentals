@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using CoreCodeCamp.Data;
 using Microsoft.AspNetCore.Builder;
@@ -19,9 +20,13 @@ namespace CoreCodeCamp
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddDbContext<CampContext>();
+
       services.AddScoped<ICampRepository, CampRepository>();
 
+      services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
       services.AddControllers();
+      services.AddSwaggerGen();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -31,6 +36,8 @@ namespace CoreCodeCamp
         app.UseDeveloperExceptionPage();
       }
 
+      app.UseSwagger();
+      app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
       app.UseRouting();
 
       app.UseAuthentication();
